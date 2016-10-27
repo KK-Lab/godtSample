@@ -41,7 +41,12 @@ extension RecipeList.Presenter: RecipeListPresenter {
     }
     
     func filterRecipesWithText(text: String) {
-        let recipes = self.recipes.filter { $0.title.containsString(text) } 
+        let recipes = self.recipes.filter {
+            let lowercaseText = text.lowercaseString
+            let joinedIngredients = $0.ingredients.joinWithSeparator("; ")
+            return $0.title.lowercaseString.containsString(lowercaseText) || joinedIngredients.lowercaseString.containsString(lowercaseText)
+        }
+        
         self.filteredRecipes = text.isEmpty ? self.recipes : recipes
         
         self.listView?.setRecipes(self.filteredRecipes.map { $0.listRecipeData })
